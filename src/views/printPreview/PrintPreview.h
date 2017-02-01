@@ -25,7 +25,9 @@ private:
 
     QTextDocument *doc;
     PreviewView *view;
+#ifndef QT_NO_PRINTER
     QPrinter printer;
+#endif
     
     QVBoxLayout *centralLayout;
 };

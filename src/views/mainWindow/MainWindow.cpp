@@ -588,11 +588,13 @@ void MainWindow::filePrint(void)
 // Предпросмотр печати текущей статьи
 void MainWindow::filePrintPreview(void)
 {
+  #ifndef QT_NO_PRINTER
   PrintPreview *preview = new PrintPreview(editorScreen->getTextareaDocument(), this);
 
   preview->setModal(true);
   preview->setAttribute(Qt::WA_DeleteOnClose);
   preview->show();
+  #endif
 }
 
 
