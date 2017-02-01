@@ -575,7 +575,7 @@ int getMilliCount(void)
   // Use getMilliSpan to correct for rollover
   
   int millisecond =QTime::currentTime().msec();//msecsSinceStartOfDay() 
-  qint64 time=QDateTime::currentSecsSinceEpoch();
+  uint time=QDateTime::currentDateTime().toTime_t();//QDateTime::currentDateTime().toMSecsSinceEpoch();
   int nCount = millisecond + (time & 0xfffff) * 1000;
   return nCount;
 }
