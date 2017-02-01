@@ -4,6 +4,7 @@
 #include <QToolButton>
 #include <QSplashScreen>
 #include <QTextOption>
+#include <QDateTime>
 
 #if QT_VERSION >= 0x050000
 #include <QScroller>
@@ -572,9 +573,10 @@ int getMilliCount(void)
   // Something like GetTickCount but portable
   // It rolls over every ~ 12.1 days (0x100000/24/60/60)
   // Use getMilliSpan to correct for rollover
-  timeb tb;
-  ftime( &tb );
-  int nCount = tb.millitm + (tb.time & 0xfffff) * 1000;
+  
+  int millisecond =QTime::currentTime().msec();//msecsSinceStartOfDay() 
+  uint time=QDateTime::currentDateTime().toTime_t();//QDateTime::currentDateTime().toMSecsSinceEpoch();
+  int nCount = millisecond + (time & 0xfffff) * 1000;
   return nCount;
 }
 

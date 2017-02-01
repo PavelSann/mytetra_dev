@@ -28,7 +28,7 @@ static inline qreal mmToInches(double mm)
     return mm*0.039370147;
 }
 
-
+#ifndef QT_NO_PRINTER
 PrintPreview::PrintPreview(const QTextDocument *document, QWidget *parent)
     : QDialog(parent), printer(QPrinter::HighResolution)
 {
@@ -102,8 +102,13 @@ PrintPreview::PrintPreview(const QTextDocument *document, QWidget *parent)
     
     setLayout(centralLayout);
     resize(800, 600);
+
 }
 
+PrintPreview::~PrintPreview()
+{
+    delete doc;
+}
 
 void PrintPreview::setup()
 {
@@ -121,10 +126,7 @@ void PrintPreview::setup()
 }
 
 
-PrintPreview::~PrintPreview()
-{
-    delete doc;
-}
+
 
 
 void PrintPreview::print()
@@ -145,5 +147,30 @@ void PrintPreview::pageSetup()
         view->updateLayout();
     }
 }
+#else
+//заглушка для работы с PrintPreview
+//TODO: нужно убрать все упоменания принтера из интерфейса приложения, при QT_NO_PRINTER
+PrintPreview::PrintPreview(const QTextDocument *document, QWidget *parent)
+  : QDialog(parent)
+{
+  setWindowTitle(tr("System not support Print Preview"));
+}
 
+PrintPreview::~PrintPreview()
+{
+}
+
+void PrintPreview::setup()
+{
+}
+
+void PrintPreview::print()
+{ 
+}
+
+void PrintPreview::pageSetup()
+{
+}
+
+#endif
 // #include "PrintPreview.moc"
