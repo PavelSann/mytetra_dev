@@ -907,7 +907,7 @@ void MainWindow::setupIconActions(void)
 void MainWindow::showWindow()
 {
   activateWindow();
-  showNormal();
+  show();
   raise();
 }
 
