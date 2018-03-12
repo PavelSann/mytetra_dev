@@ -40,3 +40,4 @@ mytetra.pro.user*
 
 # Ignore gitignore self
 .gitignore
+/PVS-Studio-log.*
