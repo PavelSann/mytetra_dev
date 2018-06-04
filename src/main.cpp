@@ -830,16 +830,20 @@ int main(int argc, char ** argv)
 
 
  // Подключение перевода интерфейса
- // QString langFileName=globalParameters.getWorkDirectory()+"/resource/translations/mytetra_"+mytetraconfig.get_interfacelanguage()+".qm";
  QString langFileName=":/resource/translations/mytetra_"+mytetraConfig.get_interfacelanguage()+".qm";
  qDebug() << "Use language file " << langFileName;
-
  QTranslator langTranslator;
  langTranslator.load(langFileName);
  app.installTranslator(&langTranslator);
 
  // Создание объекта главного окна
  MainWindow win;
+
+ // Сразу восстанавливается вид окна в предыдущий запуск
+ // Эти действия нельзя делать в конструкторе главного окна, т.к. окно еще не создано
+ // Эти действия надо делать до установки заголовка. В некоторых оконных средах,
+ // если сделать после setWindowTitle(), геометрия восстановится некорректно, окно съедет вверх на толщину заголовка
+ win.restoreAllWindowState();
 
  // Настройка объекта главного окна
  win.setWindowTitle("MyTetra");
@@ -853,25 +857,14 @@ int main(int argc, char ** argv)
      win.hide();
  }
 
- // Восстанавливается вид окна в предыдущий запуск
- // Эти действия нельзя делать в конструкторе главного окна, 
- // т.к. окно еще не создано
- globalParameters.getWindowSwitcher()->disableSwitch();
- win.restoreFindOnBaseVisible();
- win.restoreGeometry();
- win.restoreTreePosition();
- win.restoreRecordTablePosition();
- win.restoreEditorCursorPosition();
- win.restoreEditorScrollBarPosition();
- globalParameters.getWindowSwitcher()->enableSwitch();
-
+ // Восстановление видимости виджета, который был активный, для мобильного интерфейса
  if(mytetraConfig.getInterfaceMode()=="mobile")
    globalParameters.getWindowSwitcher()->restoreFocusWidget();
 
  qDebug() << "Restore session succesfull";
 
- // После восстановления последней редактируемой записи
- // история перехода очищается, так как в не может попасть
+ // В момент восстановления главного окна восстановилась и последняя редактируемая запись
+ // История перехода очищается, так как в нее может попасть
  // первая запись в востаналиваемой ветке и сама восстанавливаемая запись
  walkHistory.clear();
 
@@ -926,7 +919,6 @@ int main(int argc, char ** argv)
  }
  */
 
-
  // Инициалиация периодической проверки изменения базы сторонними программами
  periodicCheckBase.init();
  periodicCheckBase.setDelay( mytetraConfig.getCheckBasePeriod() );
@@ -941,12 +933,8 @@ int main(int argc, char ** argv)
  // Окно программы может быть снова открыто из трея
  QApplication::setQuitOnLastWindowClosed(false);
 
-
- // win.show();
  app.connect(&app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );
  app.connect(&app, SIGNAL( messageReceived(QString) ), &win, SLOT( messageHandler(QString) ) );
-
- // app.connect(&app, SIGNAL(app.commitDataRequest(QSessionManager)), SLOT(win.commitData(QSessionManager)));
 
  // Окно сплеш-скрина скрывается
  if(mytetraConfig.getShowSplashScreen())
