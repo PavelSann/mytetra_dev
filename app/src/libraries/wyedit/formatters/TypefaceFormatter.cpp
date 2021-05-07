@@ -302,9 +302,9 @@ void TypefaceFormatter::onCodeClicked(void)
         if(blockStart<=selectStart && blockStop>=selectStop)
             enableIndent=false; // Выбран кусок текста в пределах блока
         else{
-            qDebug() << "The selection is outside one block";
-            //Хорошо бы писать в статусную строку сообщение, почему форматирование не выполнено
             textArea->textCursor().endEditBlock();
+//            qDebug() << "The selection is outside one block";
+            showMessageBox(QObject::tr("The selection is outside one block"));
             return;
         }
     }
